@@ -7,13 +7,13 @@ test_all: docker_only test_ecs
 docker_container:
 	docker build -t microservice-demo-docdoctor .
 
-test_docker_only: docker_container
+test_docker_compose: docker_container
 	docker run --rm -ti \
 	    	--net=host \
 		-v /var/run/docker.sock:/var/run/docker.sock \
-		-v $(shell pwd)/../deploy/docker-only:/to-test \
-		-v $(shell pwd)/../docs/deployment/docker-only.md:/to-test/README.md \
-		microservice-demo-docdoctor 
+		-v $(shell pwd)/../deploy/docker-compose:/to-test \
+		-v $(shell pwd)/../docs/deployment/docker-compose.md:/to-test/README.md \
+		microservice-demo-docdoctor
 
 test_docker_single: docker_container
 	docker run --rm -ti \

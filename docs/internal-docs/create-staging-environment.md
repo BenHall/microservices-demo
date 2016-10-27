@@ -9,8 +9,8 @@ The intention is to build and deploy every master commit for each service to the
 
 ### Also see
 
- - [Current staging urls](./testing.html#application-urls)
- - [Creating ssh keys for deployment](./ssh-keys-for-deployment-on-travis.html)
+ - [Current staging urls](./testing.md#application-urls)
+ - [Creating ssh keys for deployment](./ssh-keys-for-deployment-on-travis.md)
 
 ### Cluster information
 
@@ -35,7 +35,7 @@ If you encounter the following error
 ```
 ./cluster/../cluster/../cluster/aws/../../cluster/common.sh: line 528: KUBE_MANIFESTS_TAR_URL: unbound variable
 ```
-go to the kubernetes/cluster folder, type `sudo nano common.sh`and edit the method `build-kube-env` like this: 
+go to the kubernetes/cluster folder, type `sudo nano common.sh` and edit the method `build-kube-env` like this: 
 
 ```
 # $1: if 'true', we're building a master yaml, else a node

@@ -27,6 +27,7 @@ DNS is achieved by using the internal Docker DNS, which reads network alias entr
 
 <!-- deploy-test-start create-infrastructure -->
 
+    docker network create mynetwork
     docker-compose up -d user-db user catalogue-db catalogue rabbitmq queue-master cart-db cart orders-db shipping payment orders front-end edge-router
 
 <!-- deploy-test-end -->
@@ -41,7 +42,7 @@ Also run a test to determine the health of the deployment.
 
 <!-- deploy-test-start run-tests -->
 
-    docker run weaveworksdemos/load-test -d 60 -h edge-router -c 3 -r 10
+    docker run --rm --net mynetwork weaveworksdemos/load-test -d 60 -h edge-router -c 3 -r 10
 
     STATUSCODE=$(curl --silent --output /dev/stderr --write-out "%{http_code}" http://localhost/health)
     if [ $STATUSCODE -ne 200 ]; then
@@ -55,9 +56,9 @@ Also run a test to determine the health of the deployment.
 
 <!-- deploy-test-start destroy-infrastructure -->
 
-    docker-compose stop
-    docker-compose rm -f
-
+    docker-compose down
+    docker network rm mynetwork
+   
 <!-- deploy-test-end -->
 
 ### Launch Weave Scope or Weave Cloud
