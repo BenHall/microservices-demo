@@ -9,10 +9,35 @@ docker_container:
 
 test_docker_only: docker_container
 	docker run --rm -ti \
+	    	--net=host \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v $(shell pwd)/../deploy/docker-only:/to-test \
 		-v $(shell pwd)/../docs/deployment/docker-only.md:/to-test/README.md \
-		microservice-demo-docdoctor
+		microservice-demo-docdoctor 
+
+test_docker_single: docker_container
+	docker run --rm -ti \
+	    	--net=host \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(shell pwd)/../deploy/docker-single:/to-test \
+		-v $(shell pwd)/../docs/deployment/docker-single-weave.md:/to-test/README.md \
+		microservice-demo-docdoctor 
+
+test_docker_swarm_mode: docker_container
+	docker run --rm -ti \
+	    	--net=host \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(shell pwd)/../deploy/swarmkit:/to-test \
+		-v $(shell pwd)/../docs/deployment/docker-swarm-mode.md:/to-test/README.md \
+		microservice-demo-docdoctor 
+
+test_docker_swarm_old: docker_container
+	docker run --rm -ti \
+	    	--net=host \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(shell pwd)/../deploy/docker-single:/to-test \
+		-v $(shell pwd)/../docs/deployment/docker-single-weave.md:/to-test/README.md \
+		microservice-demo-docdoctor 
 
 test_ecs: check-ec2-env
 	docker run --rm -ti \
