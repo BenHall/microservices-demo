@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function usage() {
+usage() {
     echo "usage: $(basename $0) [cleanup]"
     echo "  When cleanup option is provided, the script will remove previously initiated services"
 }
@@ -28,7 +28,6 @@ cleanup_services() {
     docker service rm orders-db
     docker service rm shipping
     docker service rm payment
-    docker service rm queue-master
 }
 
 if ! command_exists "docker" ; then
@@ -51,7 +50,7 @@ echo "Creating front-end service"
 docker service create \
        --publish 8079 \
        --mode global \
-       --name front-end --env "reschedule=on-node-failure" weaveworksdemos/front-end
+       --name front-end --env "reschedule=on-node-failure" weaveworksdemos/front-end:latest
 
 exit_on_failure
 
@@ -59,7 +58,7 @@ echo "Creating catalogue service"
 docker service create \
        --name catalogue \
        --network ingress \
-       --env "reschedule=on-node-failure" weaveworksdemos/catalogue
+       --env "reschedule=on-node-failure" weaveworksdemos/catalogue:latest
 exit_on_failure
 
 echo "Creating catalogue-db service"
@@ -77,7 +76,7 @@ echo "Creating user service"
 docker service create \
        --name user \
        --network ingress \
-       --env "reschedule=on-node-failure" weaveworksdemos/user
+       --env "reschedule=on-node-failure" weaveworksdemos/user:latest
 exit_on_failure
 
 echo "Creating user-db service"
@@ -92,7 +91,7 @@ echo "Creating cart service"
 docker service create \
        --name cart \
        --network ingress \
-       --env "reschedule=on-node-failure" weaveworksdemos/cart
+       --env "reschedule=on-node-failure" weaveworksdemos/cart:latest
 exit_on_failure
 
 
@@ -108,7 +107,7 @@ echo "Creating orders service"
 docker service create \
        --name orders \
        --network ingress \
-       --env "reschedule=on-node-failure" weaveworksdemos/orders
+       --env "reschedule=on-node-failure" weaveworksdemos/orders:latest
 exit_on_failure
 
 echo "Creating orders-db service"
@@ -122,19 +121,12 @@ echo "Creating shipping service"
 docker service create \
        --name shipping \
        --network ingress \
-       --env "reschedule=on-node-failure" weaveworksdemos/shipping
+       --env "reschedule=on-node-failure" weaveworksdemos/shipping:latest
 exit_on_failure
 
 echo "Creating payment service"
 docker service create \
        --name payment \
        --network ingress \
-       --env "reschedule=on-node-failure" weaveworksdemos/payment
-exit_on_failure
-
-echo "Creating queue-master service"
-docker service create \
-       --name queue-master \
-       --network ingress \
-       --env "reschedule=on-node-failure" weaveworksdemos/queue-master
+       --env "reschedule=on-node-failure" weaveworksdemos/payment:latest
 exit_on_failure
