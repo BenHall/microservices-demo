@@ -2,16 +2,18 @@
 layout: default
 ---
 
-## Sock Shop on Docker
+## Sock Shop on Docker Compose
 
 The Sock Shop application is packaged using a [Docker Compose](https://docs.docker.com/compose/) file.
-*This version does not use any custom networks*.
-DNS is achieved by using the internal Docker DNS, which reads network alias entries provided by docker-compose.
+
+### Networking
+
+In this version we create a Docker network and DNS is achieved by using the internal Docker DNS, which reads network alias entries provided by docker-compose.
 
 ### Pre-requisites
 
-- Install [Docker](https://www.docker.com/products/overview)
-- Install [Weave Scope](https://www.weave.works/install-weave-scope/)
+- Install Docker Compose
+- (Optional) Install [Weave Scope](https://www.weave.works/install-weave-scope/)
 
 ### Launch Weave Scope or Weave Cloud
 
