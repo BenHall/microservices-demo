@@ -21,7 +21,7 @@ command_exists() {
 }
 
 cleanup_services() {
-    for srvc in front-end catalogue catalogue-db user user-db cart cart-db orders orders-db shipping payment
+    for srvc in front-end catalogue catalogue-db user user-db cart cart-db orders orders-db shipping payment rabbitmq edge-router
     do
       docker service rm $srvc
     done
@@ -44,18 +44,24 @@ if [ "$1" == "cleanup" ]; then
     exit 0;
 fi
 
+echo "Create nginx edge-router"
+docker service create \
+       --publish '80:80' \
+       --mode global \
+       --name edge-router \
+       weaveworksdemos/edge-router
 
 echo "Creating front-end service"
 docker service create \
-       --publish 8079 \
-       --mode global \
-       --name front-end weaveworksdemos/front-end:latest
+       --name front-end \
+       --network ingress \
+       weaveworksdemos/front-end:1434a34753316a6c73e806744e42d1e258206884
 
 echo "Creating catalogue service"
 docker service create \
        --name catalogue \
        --network ingress \
-       weaveworksdemos/catalogue:latest
+       weaveworksdemos/catalogue:snapshot
 
 echo "Creating catalogue-db service"
 docker service create \
@@ -70,7 +76,7 @@ echo "Creating user service"
 docker service create \
        --name user \
        --network ingress \
-       weaveworksdemos/user:latest
+       weaveworksdemos/user:snapshot
 
 echo "Creating user-db service"
 docker service create \
@@ -78,13 +84,11 @@ docker service create \
        --network ingress \
        weaveworksdemos/user-db:latest
 
-
 echo "Creating cart service"
 docker service create \
        --name cart \
        --network ingress \
-       weaveworksdemos/cart:latest
-
+       weaveworksdemos/cart:snapshot
 
 echo "Creating cart-db service"
 docker service create \
@@ -92,12 +96,17 @@ docker service create \
        --network ingress \
        mongo:3.2
 
-
 echo "Creating orders service"
 docker service create \
        --name orders \
        --network ingress \
-       weaveworksdemos/orders:latest
+       weaveworksdemos/orders:snapshot
+
+echo "Creating rabbitmq service"
+docker service create \
+      --name rabbitmq \
+      --network ingress \
+      rabbitmq:3
 
 echo "Creating orders-db service"
 docker service create \
@@ -109,10 +118,10 @@ echo "Creating shipping service"
 docker service create \
        --name shipping \
        --network ingress \
-       weaveworksdemos/shipping:latest
+       weaveworksdemos/shipping:snapshot
 
 echo "Creating payment service"
 docker service create \
        --name payment \
        --network ingress \
-       weaveworksdemos/payment:latest
+       weaveworksdemos/payment:snapshot

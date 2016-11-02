@@ -18,21 +18,23 @@ test_docker_compose: docker_container
 
 test_docker_compose_weave: docker_container
 	docker run --rm -ti \
+	    	--net=host \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v $(shell pwd)/../deploy/docker-compose-weave:/docker-compose-weave \
 		-v $(shell pwd)/../docs/deployment/docker-compose-weave.md:/docker-compose-weave/README.md \
 		-w /docker-compose-weave \
 		microservice-demo-docdoctor
 
-test_docker_single: docker_container
+test_docker_swarm_single_node: docker_container
 	docker run --rm -ti \
 	    	--net=host \
 		-v /var/run/docker.sock:/var/run/docker.sock \
-		-v $(shell pwd)/../deploy/docker-single:/to-test \
-		-v $(shell pwd)/../docs/deployment/docker-single-weave.md:/to-test/README.md \
-		microservice-demo-docdoctor 
+		-v $(shell pwd)/../deploy/swarmkit:/to-test \
+		-v $(shell pwd)/../docs/deployment/docker-swarm-single-node.md:/to-test/README.md \
+		-w /to-test \
+		microservice-demo-docdoctor /bin/sh
 
-test_docker_swarm_mode: docker_container
+test_docker_swarm_muliple_node:
 	docker run --rm -ti \
 	    	--net=host \
 		-v /var/run/docker.sock:/var/run/docker.sock \

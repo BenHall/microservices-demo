@@ -2,7 +2,7 @@
 layout: default
 ---
 
-## Sock Shop on Docker Compose & Weave
+## Sock Shop  Docker Compose & Weave
 
 The Weave Demo application is packaged using a [Docker Compose](https://docs.docker.com/compose/) file.
 
@@ -12,39 +12,53 @@ In this version we create several isolated networks using the [Weave Docker plug
 
 ### Pre-requisites
 
-- Install Docker Compose
+- Install [Docker](https://www.docker.com/products/overview)
+- Install [Docker Compose](https://docs.docker.com/compose/install/)
 - Install [Weave Net](https://www.weave.works/install-weave-net/)
 - (Optional) Install [Weave Scope](https://www.weave.works/install-weave-scope/)
 
-<!-- deploy-test-start pre-install -->
+### *(Optional)* Launch Weave Scope or Weave Cloud
 
-    apt-get install -yq curl
+Weave Scope (local instance)
 
-    curl -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-    chmod +x /usr/local/bin/docker-compose
-    curl -L git.io/weave -o /usr/local/bin/weave
-    chmod a+x /usr/local/bin/weave
+    scope launch
 
-<!-- deploy-test-end -->
+Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.weave.works/).
+
+    scope launch --service-token=<token>
 
 
 ### Provision infrastructure
 
 <!-- deploy-test-start create-infrastructure -->
 
-
+    curl -L git.io/weave -o /usr/local/bin/weave
+    chmod a+x /usr/local/bin/weave
     weave launch
-    docker-compose up -d user-db user catalogue-db catalogue rabbitmq queue-master cart-db cart orders-db shipping payment orders front-end edge-router
+
+    docker-compose up -d
 
 <!-- deploy-test-end -->
     
 ### Run tests
 
-Run the user similator load test. For more information see [Load Test](#loadtest)
+There's a load test provided as a service in this compose file. For more information see [Load Test](#loadtest).  
+It will run when the compose is started up, after a delay of 60s. This is a load test provided to simulate user traffic to the application.
+This will send some traffic to the application, which will form the connection graph that you view in Scope or Weave Cloud. 
+
+You may also choose to run the following command to check the health of the deployment.
 
 <!-- deploy-test-start run-tests -->
 
-    docker run --net dockercomposeweave_external --rm weaveworksdemos/load-test -d 60 -h edge-router -c 3 -r 10
+    sleep 90
+    STATUS=$(curl -s -o output.txt -w "%{http_code}" http://localhost/health?nodes=user,catalogue,queue-master,cart,shipping,payment,orders)
+    cat output.txt 2>/dev/null | jq 
+    rm output.txt
+
+    if [ $STATUS -ne 200 ]; then
+        echo "$(tput setaf 1)DEPLOY FAILED$(tput sgr0)"
+        exit 1
+    fi
 
 <!-- deploy-test-end -->
 
@@ -56,24 +70,3 @@ Run the user similator load test. For more information see [Load Test](#loadtest
     weave stop
    
 <!-- deploy-test-end -->
-
-### Launch Weave Scope or Weave Cloud
-
-Weave Scope (local instance)
-
-    scope launch
-
-Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.weave.works/).
-
-    scope launch --service-token=<token>
-
-### Load test
-
-There's a load test provided to simulate user traffic to the application.
-
-    docker run weaveworksdemos/load-test -h http://localhost/ -r 100 -c 2
-
-This will send some traffic to the application, which will form the connection graph that you view in Scope or Weave Cloud.
-
-
-

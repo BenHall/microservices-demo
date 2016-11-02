@@ -2,7 +2,7 @@
 layout: default
 ---
 
-## Sock Shop on Docker Compose
+## Sock Shop via Docker Compose
 
 The Sock Shop application is packaged using a [Docker Compose](https://docs.docker.com/compose/) file.
 
@@ -12,10 +12,11 @@ In this version we create a Docker network and DNS is achieved by using the inte
 
 ### Pre-requisites
 
-- Install Docker Compose
-- (Optional) Install [Weave Scope](https://www.weave.works/install-weave-scope/)
+- Install [Docker](https://www.docker.com/products/overview)
+- Install [Docker Compose](https://docs.docker.com/compose/install/)
+- *(Optional)* Install [Weave Scope](https://www.weave.works/install-weave-scope/)
 
-### Launch Weave Scope or Weave Cloud
+### *(Optional)* Launch Weave Scope or Weave Cloud
 
 Weave Scope (local instance)
 
@@ -29,6 +30,7 @@ Weave Cloud (hosted platform). Get a token by [registering here](http://cloud.we
 
 <!-- deploy-test-start create-infrastructure -->
 
+    docker network create mynetwork
     docker-compose up -d 
 
 <!-- deploy-test-end -->
@@ -44,9 +46,11 @@ You may also choose to run the following command to check the health of the depl
 <!-- deploy-test-start run-tests -->
 
     sleep 60
-    STATUSCODE=$(curl --silent --output /dev/stderr --write-out "%{http_code}" http://localhost/health?nodes=user,catalogue,queue-master,cart,shipping,payment,orders)
+    STATUS=$(curl -s -o output.txt -w "%{http_code}" http://localhost/health?nodes=user,catalogue,queue-master,cart,shipping,payment,orders)
 
-    if [ $STATUSCODE -ne 200 ]; then
+    cat output.txt | jq
+
+    if [ $STATUS -ne 200 ]; then
         echo "$(tput setaf 1)DEPLOY FAILED$(tput sgr0)"
         exit 1
     fi
@@ -58,5 +62,7 @@ You may also choose to run the following command to check the health of the depl
 <!-- deploy-test-start destroy-infrastructure -->
 
     docker-compose down
+    docker network rm mynetwork
+    rm output.txt
    
 <!-- deploy-test-end -->
