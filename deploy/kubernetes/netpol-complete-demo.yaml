@@ -1,0 +1,256 @@
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: cart-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: cart
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: front-end
+        - podSelector:
+            matchLabels:
+              name: orders
+      ports:
+        - protocol: TCP
+          port: 80
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: cart-db-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: cart-db
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: cart
+      ports:
+        - protocol: TCP
+          port: 27017
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: catalogue-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: catalogue
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: front-end
+      ports:
+        - protocol: TCP
+          port: 80
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: catalogue-db-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: catalogue-db
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: catalogue
+      ports:
+        - protocol: TCP
+          port: 3306
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: front-end-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: front-end
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: 8079
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: orders-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: orders
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: front-end
+      ports:
+        - protocol: TCP
+          port: 80
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: orders-db-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: orders-db
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: orders
+      ports:
+        - protocol: TCP
+          port: 27017
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: payment-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: payment
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: orders
+      ports:
+        - protocol: TCP
+          port: 80
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: prism-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: prism
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: rabbitmq-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: rabbitmq
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: shipping
+        - podSelector:
+            matchLabels:
+              name: queue-master
+      ports:
+        - protocol: TCP
+          port: 5672
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: rabbitmq-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: rabbitmq
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: shipping
+        - podSelector:
+            matchLabels:
+              name: queue-master
+      ports:
+        - protocol: TCP
+          port: 5672
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: shipping-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: shipping
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: orders
+      ports:
+        - protocol: TCP
+          port: 80
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: user-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: user
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: front-end
+        - podSelector:
+            matchLabels:
+              name: orders
+      ports:
+        - protocol: TCP
+          port: 80
+---
+apiVersion: extensions/v1beta1
+kind: NetworkPolicy
+metadata:
+  name: user-db-access
+  namespace: sock-shop
+spec:
+  podSelector:
+    matchLabels:
+      name: user-db
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              name: user
+      ports:
+        - protocol: TCP
+          port: 27017
