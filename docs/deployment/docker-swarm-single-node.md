@@ -44,8 +44,7 @@ You may also choose to run the following command to check the health of the depl
 <!-- deploy-test-start run-tests -->
 
     sleep 120
-    STATUS=$(curl -s -o output.txt -w "%{http_code}" http://localhost:30000/health?nodes=user,catalogue,cart,shipping,payment,orders)
-    echo $STATUS
+    STATUS=$(curl -4 -s -o output.txt -w "%{http_code}" http://localhost/health?nodes=user,catalogue,cart,shipping,payment,orders)
     cat output.txt | jq
     rm output.txt
 
